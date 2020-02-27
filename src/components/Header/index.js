@@ -5,23 +5,35 @@ import { Container, Input } from "./styles";
 import ListPeopleContext from "../../contexts/ListPeople";
 
 export default function Header() {
-  const { arrayHolder, setPeople } = useContext(ListPeopleContext);
+  const { arrayHolder, setPeople, setIsFiltered } = useContext(ListPeopleContext);
 
   searchFilterFunction = text => {
-    const newData = arrayHolder.filter(item => {
-      const itemData = item.name.toUpperCase();
-      const textData = text.toUpperCase();
-      return itemData.indexOf(textData) > -1;
+    let textData = text.toLowerCase();
+
+    let filteredName = arrayHolder.filter((item) => {
+      return item.name.toLowerCase().match(textData);
     });
-    setPeople(newData);
+    
+    if (!text || text === '' || !Array.isArray(filteredName) || !filteredName.length) {
+      setIsFiltered(false);
+      return setPeople(arrayHolder);
+      
+    } 
+
+    setIsFiltered(true);
+
+    setPeople(filteredName); 
+
   };
 
   return (
     <Container>
       <Input
-        placeholder="Buscar pelo nome"
+        placeholder="Search by name"
         onChangeText={text => searchFilterFunction(text)}
         placeholderTextColor="#828282"
+        autoCapitalize="words"
+        autoCorrect={false}
       ></Input>
       <Feather name="search" size={24}></Feather>
     </Container>

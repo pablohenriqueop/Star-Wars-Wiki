@@ -1,13 +1,16 @@
 import { registerRootComponent } from "expo";
 import React, { useState, useEffect } from "react";
+
 if (__DEV__) {
   import("../ReactotronConfig");
 }
+
 import {
   StyleSheet,
   StatusBar,
   ImageBackground,
-  ActivityIndicator
+  ActivityIndicator,
+  View
 } from "react-native";
 import Header from "./components/Header";
 
@@ -24,6 +27,14 @@ export default function App() {
   const [people, setPeople] = useState([]);
   const [arrayHolder, setArrayHolder] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMoreData, setLoadingMoreData] = useState(false);
+  const [nextPage, setNextPage] = useState("");
+  const [isFiltered, setIsFiltered] = useState(false);
+
+  
+  useEffect(() => {
+    fechData();
+  }, []);
 
   async function fechData() {
     setLoading(true);
@@ -31,24 +42,43 @@ export default function App() {
     setLoading(false);
     setPeople(response.data.results);
     setArrayHolder(response.data.results);
+    setNextPage(response.data.next);
   }
 
-  useEffect(() => {
-    fechData();
-  }, []);
+  const handleLoadPeople = async () => {
+     if (loadingMoreData) return;
+     setLoadingMoreData(true);
+     const response = await api.get(nextPage);
+     setPeople([ ...people, ...response.data.results]);
+     setArrayHolder([...people, ...response.data.results]);
+     setNextPage(response.data.next);
+     setLoadingMoreData(false);
+
+  } 
+
+  const renderFooter = () => {
+    if (!loadingMoreData) return null;
+    return (
+      <View style={styles.loadingFooter}>
+        <ActivityIndicator size="large" color="#fff" />
+      </View>
+    );
+  };
 
   return (
-    <ListPeopleContext.Provider value={{ arrayHolder, setPeople }}>
+    <ListPeopleContext.Provider value={{ arrayHolder, setPeople, setIsFiltered }}>
       <ImageBackground style={styles.container} source={background}>
         <StatusBar barStyle="light-content" />
         <Title source={titulo} style={styles.strech}></Title>
         <Header></Header>
-        {loading ? (
+        { loading ? (
           <ActivityIndicator style={styles.actvity} size="large" color="#FFF" />
         ) : (
           <ListPeople
             data={people}
             keyExtractor={person => person.name}
+            onEndReached={() => nextPage && !isFiltered ? handleLoadPeople() : '' }
+            onEndReachedThreshold={0.1}
             renderItem={({ item }) => (
               <BoxPeople
                 name={item.name}
@@ -57,8 +87,10 @@ export default function App() {
                 mass={item.mass}
               ></BoxPeople>
             )}
+            ListFooterComponent={ () => renderFooter() }
           ></ListPeople>
         )}
+        
       </ImageBackground>
     </ListPeopleContext.Provider>
   );
@@ -76,6 +108,9 @@ const styles = StyleSheet.create({
   },
   actvity: {
     flex: 1
+  }, 
+  loadingFooter: {
+    marginTop: 15,
   }
 });
 
