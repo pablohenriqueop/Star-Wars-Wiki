@@ -5,16 +5,13 @@ import { Container, Input} from './styles';
 
 export default function Header({arrayHolder, setPeople}) {
 
-  searchFilterFunction = text => {  
-    console.log(arrayHolder);  
-   /*  const newData = arrayHolder.filter(item => {      
+  searchFilterFunction = text => {   
+    const newData = arrayHolder.filter(item => {      
        const itemData = item.name.toUpperCase();
        const textData = text.toUpperCase();    
        return itemData.indexOf(textData) > -1;    
     });
-
-    setPeople(newData); */
-     
+    setPeople(newData); 
   };
 
   return (
