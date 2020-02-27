@@ -1,18 +1,18 @@
+import { registerRootComponent } from 'expo';
 import React, {useState, useEffect} from 'react';
 if(__DEV__) {
-  import("./ReactotronConfig");
+  import("../ReactotronConfig");
 }
 import { StyleSheet, StatusBar, ImageBackground, ActivityIndicator} from 'react-native';
-import Header from './src/components/Header';
+import Header from './components/Header';
 
+import background from '../assets/background.jpg';
+import titulo from '../assets/titulo.png';
 
-import background from './assets/background.jpg';
-import titulo from './assets/titulo.png';
-
-import { ListPeople } from './src/components/ListPeople';
-import BoxPeople from './src/components/BoxPeople';
-import  { Title } from './src/components/Title';
-import api from './src/components/services/api';
+import { ListPeople } from './components/ListPeople';
+import BoxPeople from './components/BoxPeople';
+import  { Title } from './components/Title';
+import api from './services/api';
 
 
 
@@ -73,3 +73,5 @@ const styles = StyleSheet.create({
     flex: 1,
   }
 });
+
+registerRootComponent(App);
