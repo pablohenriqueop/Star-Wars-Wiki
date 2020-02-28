@@ -22,6 +22,7 @@ import BoxPeople from "./components/BoxPeople";
 import { Title } from "./components/Title";
 import api from "./services/api";
 import ListPeopleContext from "./contexts/ListPeople";
+import { addFavorite, removeFavorite } from './utils/favorite';
 
 export default function App() {
   const [people, setPeople] = useState([]);
