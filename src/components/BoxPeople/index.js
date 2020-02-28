@@ -4,7 +4,7 @@ import { View, TouchableOpacity, AsyncStorage} from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
 import { Container, Text, TitleYellow} from './styles';
-import { getFavoritePeople, addFavorite, isFavorited, removeFavorite } from '../../utils/favorite';
+import { addFavorite, isFavorited, removeFavorite } from '../../utils/favorite';
 
 export default function BoxPeople({ id, name, height, gender, mass }, navigation) {
   const [ favorited, setFavorited ] = useState(false);
